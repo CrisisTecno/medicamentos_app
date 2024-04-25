@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444185295327",
+    "project_id": "medinas-app-5fe26",
+    "storage_bucket": "medinas-app-5fe26.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444185295327:android:f6056600c642ed0f366c6a",
+        "android_client_info": {
+          "package_name": "com.example.medinas_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5ktd-wnssZGv-SuwgOw0NEh1t6C9XDMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
