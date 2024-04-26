@@ -19,28 +19,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   bool animate = true;
 
-  Future<void> _fetchUserData() async {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    await userProvider.fetchAndSetUser('tecn0crisis0@gmail.com');
-  }
-
-  Future<void> fetchUtils() async {
-    try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('Utils').get();
-      print(querySnapshot);
-      final appProvider = Provider.of<AppProvider>(context, listen: false);
-      if (querySnapshot.docs.isNotEmpty) {
-        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-          print("por aca");
-          final data = doc.data() as Map<String, dynamic>;
-
-          appProvider.setCategoria(data["numCategorias"]);
-        }
-      }
-    } catch (e) {}
-  }
-
   @override
   void initState() {
     super.initState();
@@ -50,8 +28,30 @@ class _SplashScreenState extends State<SplashScreen> {
       // );
       fetchUtils();
       _fetchUserData();
+      print("por aca gfe");
       Navigator.of(context).pushNamed(RouteManager.homeScreen);
     });
+  }
+
+  Future<void> _fetchUserData() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    await userProvider.fetchAndSetUser('tecn0crisis0@gmail.com');
+  }
+
+  Future<void> fetchUtils() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('Utils').get();
+
+      final appProvider = Provider.of<AppProvider>(context, listen: false);
+      if (querySnapshot.docs.isNotEmpty) {
+        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+
+          appProvider.setCategoria(data["numCategorias"]);
+        }
+      }
+    } catch (e) {}
   }
 
   @override

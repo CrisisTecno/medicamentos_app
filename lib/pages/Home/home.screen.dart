@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -13,13 +15,12 @@ import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  final int limit = 6;
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int limit = 6;
   bool _isLoading = false;
   List<Medicamento> _data = [];
   List<List<Medicamento>> datax = [];
@@ -27,22 +28,30 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    fetchData();
+
     super.initState();
   }
 
-  Future<void> fetchData() async {
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+
+    super.didChangeDependencies();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
     setState(() {
       _isLoading = true;
     });
     try {
       final appProvider = Provider.of<AppProvider>(context, listen: true);
 
-      datax = List.generate(appProvider.categorias, (_) => []);
+      List<List<Medicamento>> datax2 =
+          List.generate(appProvider.categorias, (_) => []);
 
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('Medicamento').get();
-      print(querySnapshot);
 
       List<Medicamento> combinedData = [];
       if (querySnapshot.docs.isNotEmpty) {
@@ -51,24 +60,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // Map<String, dynamic> medicament = doc.data() as Map<String, dynamic>;
           combinedData.add(medicament);
+
           int categoriaIndex = medicament.categoria - 1;
-          if (categoriaIndex >= 0 && categoriaIndex < limit) {
-            datax[categoriaIndex].add(medicament);
+          if (categoriaIndex >= 0 && categoriaIndex < appProvider.categorias) {
+            datax2[categoriaIndex].add(medicament);
           }
         }
-        print(combinedData);
-        print("datax:");
-        print(datax);
       }
       setState(() {
         if (mounted) {
           _data = combinedData;
+          datax = datax2;
         }
       });
     } catch (e) {
       print("Error fetching data: $e");
     } finally {
-      print(datax);
       setState(() {
         _isLoading = false;
       });
@@ -95,43 +102,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 5,
                 ),
                 Container(
-                  child: Column(
-                    children: [
-                      TextoCentrado(
-                        color: Colors.white,
-                        h: 30,
-                        w: double.infinity,
-                        tap: 5,
-                        texto: 'Vitrina #1',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 175,
-                        child: _isLoading
-                            ? Center()
-                            : ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _data.length,
-                                itemBuilder: (context, index) {
-                                  var medicamentData = _data[index];
-                                  String precioConvertido =
-                                      medicamentData.precio.toString();
-                                  String cantidadConvertido =
-                                      medicamentData.cantidad.toString();
-                                  return CardMedicamento(
-                                    nombre: medicamentData.nombre,
-                                    precio: precioConvertido,
-                                    cantidad: cantidadConvertido,
-                                    nota: medicamentData.descripcion,
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
-                  ),
+                  width: double.infinity,
+                  height: 800,
+                  child: _isLoading
+                      ? Center()
+                      : ListView.builder(
+                          itemBuilder: (BuildContext context, int index) {
+                            var vidrinaData = datax[index];
+
+                            print("por aca aca wee");
+                            print(index);
+                            print(datax);
+                            return Vitrina(
+                              i: index,
+                              data: datax[index],
+                              isLoading: _isLoading,
+                            );
+                          },
+                          scrollDirection: Axis.horizontal,
+                          itemCount: datax.length,
+                        ),
                 ),
               ],
             ),
@@ -150,6 +140,62 @@ class _HomeScreenState extends State<HomeScreen> {
             user != null && user.rol == 'ADMIN' ? AgregarProducto() : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
+    );
+  }
+}
+
+class Vitrina extends StatelessWidget {
+  const Vitrina({
+    super.key,
+    required bool isLoading,
+    required int i,
+    required List<Medicamento> data,
+  })  : _isLoading = isLoading,
+        _data = data,
+        _i = i;
+
+  final bool _isLoading;
+  final List<Medicamento> _data;
+  final int _i;
+
+  @override
+  Widget build(BuildContext context) {
+    final numVitrina = 'Vitrina #' + _i.toString();
+    return Column(
+      children: [
+        TextoCentrado(
+          color: Colors.white,
+          h: 30,
+          w: 500,
+          tap: 5,
+          texto: numVitrina,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          width: 500,
+          height: 175,
+          child: _isLoading && _data.isEmpty
+              ? Center()
+              : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _data.length,
+                  itemBuilder: (context, index) {
+                    var medicamentData = _data[index];
+                    String precioConvertido = medicamentData.precio.toString();
+                    String cantidadConvertido =
+                        medicamentData.cantidad.toString();
+                    return CardMedicamento(
+                      nombre: medicamentData.nombre,
+                      precio: precioConvertido,
+                      cantidad: cantidadConvertido,
+                      nota: medicamentData.descripcion,
+                    );
+                  },
+                ),
+        ),
+      ],
     );
   }
 }

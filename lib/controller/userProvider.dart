@@ -20,9 +20,7 @@ class UserProvider with ChangeNotifier {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        print("venimos aca");
         final userDoc = querySnapshot.docs.first;
-        print("Document data: ${userDoc.data()}");
         _user = UserModel.fromDocument(userDoc);
         notifyListeners();
       } else {
