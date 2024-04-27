@@ -27,15 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-
     super.didChangeDependencies();
     _fetchData();
   }
@@ -86,7 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final user = userProvider.user;
-    print(user);
 
     return SafeArea(
       child: Scaffold(
@@ -103,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Container(
                   width: double.infinity,
-                  height: 800,
+                  height: double.infinity,
                   child: _isLoading
                       ? Center()
                       : ListView.builder(
@@ -112,14 +107,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             print("por aca aca wee");
                             print(index);
-                            print(datax);
+                            print(datax[index]);
                             return Vitrina(
                               i: index,
                               data: datax[index],
                               isLoading: _isLoading,
                             );
                           },
-                          scrollDirection: Axis.horizontal,
+                          scrollDirection: Axis.vertical,
                           itemCount: datax.length,
                         ),
                 ),
@@ -160,42 +155,54 @@ class Vitrina extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final numVitrina = 'Vitrina #' + _i.toString();
-    return Column(
-      children: [
-        TextoCentrado(
-          color: Colors.white,
-          h: 30,
-          w: 500,
-          tap: 5,
-          texto: numVitrina,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Container(
-          width: 500,
-          height: 175,
-          child: _isLoading && _data.isEmpty
-              ? Center()
-              : ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _data.length,
-                  itemBuilder: (context, index) {
-                    var medicamentData = _data[index];
-                    String precioConvertido = medicamentData.precio.toString();
-                    String cantidadConvertido =
-                        medicamentData.cantidad.toString();
-                    return CardMedicamento(
-                      nombre: medicamentData.nombre,
-                      precio: precioConvertido,
-                      cantidad: cantidadConvertido,
-                      nota: medicamentData.descripcion,
-                    );
-                  },
-                ),
-        ),
-      ],
+    final numVitrina = 'Vitrina #' + (_i + 1).toString();
+    return Container(
+      width: 500,
+      height: 200,
+      child: Column(
+        children: [
+          TextoCentrado(
+            color: Colors.white,
+            h: 30,
+            w: double.infinity,
+            tap: 5,
+            texto: numVitrina,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            width: double.infinity,
+            height: 150,
+            child: _isLoading && _data.isEmpty
+                ? Center()
+                : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _data.length,
+                    itemBuilder: (context, index) {
+                      var medicamentData = _data[index];
+                      print(medicamentData.cantidad);
+                      print(medicamentData.categoria);
+                      print(medicamentData.descripcion);
+                      print(medicamentData.fechaDeActualizacion);
+                      print(medicamentData.fechaDeCreacion);
+                      print(medicamentData.nombre);
+                      print(medicamentData.precio);
+                      String precioConvertido =
+                          medicamentData.precio.toString();
+                      String cantidadConvertido =
+                          medicamentData.cantidad.toString();
+                      return CardMedicamento(
+                        nombre: medicamentData.nombre,
+                        precio: precioConvertido,
+                        cantidad: cantidadConvertido,
+                        nota: medicamentData.descripcion,
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }

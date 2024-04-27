@@ -6,6 +6,7 @@ import 'package:medinas_app/controller/loginProvider.dart';
 import 'package:medinas_app/controller/userProvider.dart';
 import 'package:medinas_app/firebase_options.dart';
 import 'package:medinas_app/routes/routing.dart';
+import 'package:medinas_app/utils/sizer.dart';
 import 'package:provider/provider.dart';
 import './public/theme/theme.dart';
 import 'pages/Splash/splash.screen.dart';
@@ -33,12 +34,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Medinas App',
-      theme: MedinasTheme(),
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
-      onGenerateRoute: RouteManager.generateRoute,
-    );
+    return Sizer(builder: (context, orientation, deviceType) {
+      return MaterialApp(
+        title: 'Medinas App',
+        theme: MedinasTheme(),
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen(),
+        onGenerateRoute: RouteManager.generateRoute,
+      );
+    });
   }
 }
