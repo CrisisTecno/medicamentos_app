@@ -11,6 +11,7 @@ import 'package:medinas_app/models/medicament.model.dart';
 import 'package:medinas_app/pages/Home/components/agregarButtom.dart';
 import 'package:medinas_app/pages/Login/components/titleWhite.dart';
 import 'package:medinas_app/public/theme/colors.dart';
+import 'package:medinas_app/utils/sizer.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -81,44 +82,47 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    final appProvider = Provider.of<AppProvider>(context);
     final user = userProvider.user;
-
+    final heigthTotal = appProvider.categorias * 200.00;
     return SafeArea(
       child: Scaffold(
         body: Stack(
           children: [
-            Column(
-              children: [
-                SizedBox(
-                  height: 15,
-                ),
-                TitleWhite(),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: _isLoading
-                      ? Center()
-                      : ListView.builder(
-                          itemBuilder: (BuildContext context, int index) {
-                            var vidrinaData = datax[index];
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TitleWhite(),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: heigthTotal,
+                    child: _isLoading
+                        ? Center()
+                        : ListView.builder(
+                            itemBuilder: (BuildContext context, int index) {
+                              var vidrinaData = datax[index];
 
-                            print("por aca aca wee");
-                            print(index);
-                            print(datax[index]);
-                            return Vitrina(
-                              i: index,
-                              data: datax[index],
-                              isLoading: _isLoading,
-                            );
-                          },
-                          scrollDirection: Axis.vertical,
-                          itemCount: datax.length,
-                        ),
-                ),
-              ],
+                              print("por aca aca wee");
+                              print(index);
+                              print(datax[index]);
+                              return Vitrina(
+                                i: index,
+                                data: datax[index],
+                                isLoading: _isLoading,
+                              );
+                            },
+                            scrollDirection: Axis.vertical,
+                            itemCount: datax.length,
+                          ),
+                  ),
+                ],
+              ),
             ),
             if (_isLoading)
               Container(

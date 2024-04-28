@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medinas_app/public/theme/colors.dart';
+import 'package:medinas_app/routes/routing.dart';
 
 class AgregarProducto extends StatelessWidget {
   const AgregarProducto({
@@ -9,6 +10,9 @@ class AgregarProducto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed(RouteManager.addProductScreen);
+      },
       child: Container(
         decoration: BoxDecoration(
           color: secondary.withOpacity(0.6),

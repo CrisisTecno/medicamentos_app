@@ -41,6 +41,7 @@ dependencies:
   firebase_core: ^3.1.1
   firebase_auth: ^5.1.1
   cloud_firestore: ^5.0.2
+  flutter_svg: ^2.0.9
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +69,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/public/assets/icons/
+    - lib/public/assets/icons_svg/
     - lib/public/assets/images/
   #   - images/a_dot_ham.jpeg
 
